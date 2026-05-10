@@ -83,14 +83,14 @@ export default function IntakeForm() {
   return (
     <StepShell canContinue={isValid} onContinue={onContinue}>
       <div>
-        <h2 className="text-lg font-semibold text-coast-deep sm:text-xl">Your details</h2>
+        <h2 className="text-lg font-semibold text-coast-deep ">Your details</h2>
         <p className="text-sm text-slate-500">
           We need a few details to confirm your consultation. Required fields are marked with{' '}
           <span className="text-rose-500">*</span>.
         </p>
       </div>
 
-      <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="mt-5 grid grid-cols-1 gap-4">
         <Field
           id="field-fullName"
           label="Full name"
@@ -136,7 +136,7 @@ export default function IntakeForm() {
           autoComplete="bday"
         />
 
-        <div className="sm:col-span-2">
+        <div>
           <label className="block text-sm font-medium text-coast-deep">
             New or returning patient? <span className="text-rose-500">*</span>
           </label>
@@ -173,7 +173,7 @@ export default function IntakeForm() {
           )}
         </div>
 
-        <div className="sm:col-span-2">
+        <div>
           <label htmlFor="field-reason" className="block text-sm font-medium text-coast-deep">
             Reason for visit / goals
           </label>
@@ -213,7 +213,7 @@ export default function IntakeForm() {
           )}
         </div>
 
-        <div className="sm:col-span-2">
+        <div>
           <label htmlFor="field-allergies" className="block text-sm font-medium text-coast-deep">
             Allergies or medications we should know about?
           </label>

@@ -12,7 +12,7 @@ export default function CancellationPolicy() {
       onContinue={() => goNext()}
     >
       <div>
-        <h2 className="text-lg font-semibold text-coast-deep sm:text-xl">Cancellation policy</h2>
+        <h2 className="text-lg font-semibold text-coast-deep ">Cancellation policy</h2>
         <p className="text-sm text-slate-500">Please review before continuing to payment.</p>
       </div>
 

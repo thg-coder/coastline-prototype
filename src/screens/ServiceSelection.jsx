@@ -32,7 +32,7 @@ export default function ServiceSelection() {
         continueLabel="Continue"
       >
         <div>
-          <h2 className="text-lg font-semibold text-coast-deep sm:text-xl">
+          <h2 className="text-lg font-semibold text-coast-deep">
             Choose your consultation
           </h2>
           <p className="mt-1 text-sm text-slate-500">
@@ -40,7 +40,7 @@ export default function ServiceSelection() {
           </p>
         </div>
 
-        <ul className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <ul className="mt-5 grid grid-cols-1 gap-3">
           {SERVICES.map((svc) => {
             const isSelected = selectedId === svc.id;
             return (

@@ -17,7 +17,7 @@ export default function PractitionerSelection() {
     <StepShell canContinue={!!state.practitionerId} onContinue={() => goNext()}>
       <div>
         <p className="text-xs uppercase tracking-widest text-coast-ocean">Selected service</p>
-        <h2 className="mt-1 text-lg font-semibold text-coast-deep sm:text-xl">{svc.name}</h2>
+        <h2 className="mt-1 text-lg font-semibold text-coast-deep ">{svc.name}</h2>
         <p className="text-sm text-slate-500">Choose your practitioner</p>
       </div>
 

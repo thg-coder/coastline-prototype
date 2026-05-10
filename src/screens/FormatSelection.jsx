@@ -20,7 +20,7 @@ export default function FormatSelection() {
     <StepShell canContinue={!!state.format} onContinue={() => goNext()}>
       <div>
         <p className="text-xs uppercase tracking-widest text-coast-ocean">Selected service</p>
-        <h2 className="mt-1 text-lg font-semibold text-coast-deep sm:text-xl">{svc.name}</h2>
+        <h2 className="mt-1 text-lg font-semibold text-coast-deep ">{svc.name}</h2>
         <p className="text-sm text-slate-500">
           {svc.durationMin} min · ${svc.fee} consultation fee
         </p>
@@ -28,7 +28,7 @@ export default function FormatSelection() {
 
       <h3 className="mt-6 text-sm font-semibold text-coast-deep">Choose your consultation format</h3>
 
-      <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div className="mt-3 grid grid-cols-1 gap-3">
         <FormatCard
           icon={<Video size={20} />}
           title="Virtual Consultation"

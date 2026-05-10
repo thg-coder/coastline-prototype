@@ -55,7 +55,7 @@ export default function Confirmation() {
         <div className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
           <CheckCircle2 size={36} strokeWidth={2} />
         </div>
-        <h2 className="mt-3 text-xl font-semibold text-coast-deep sm:text-2xl">You're booked!</h2>
+        <h2 className="mt-3 text-xl font-semibold text-coast-deep ">You're booked!</h2>
         <p className="mt-1 text-sm text-slate-500">
           A confirmation has been sent to{' '}
           <span className="font-medium text-coast-deep">{state.intake.email}</span>.
@@ -67,7 +67,7 @@ export default function Confirmation() {
         <h3 className="text-xs font-semibold uppercase tracking-widest text-coast-ocean">
           Appointment
         </h3>
-        <dl className="mt-3 grid grid-cols-1 gap-x-6 gap-y-2 text-sm sm:grid-cols-2">
+        <dl className="mt-3 grid grid-cols-1 gap-x-6 gap-y-2 text-sm">
           <Row label="Service" value={svc?.name || '—'} />
           <Row label="Provider" value={pract?.name || '—'} />
           <Row
@@ -79,7 +79,7 @@ export default function Confirmation() {
             }
           />
           <Row label="Format" value={formatLabel} />
-          <Row label="Location" value={locationLabel} fullWidth />
+          <Row label="Location" value={locationLabel} />
           <Row label="Fee paid" value={`$${svc?.fee || 0}`} />
           <Row
             label="Card"
@@ -88,7 +88,7 @@ export default function Confirmation() {
         </dl>
       </div>
 
-      <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+      <div className="mt-4 flex flex-col gap-2">
         <button
           type="button"
           onClick={handleAddToCalendar}
@@ -110,7 +110,7 @@ export default function Confirmation() {
         <div className="mb-2 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-slate-500">
           <Mail size={12} className="text-coast-ocean" /> Email previews
         </div>
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4">
           <PatientEmail state={state} svc={svc} pract={pract} apptDate={apptDate} formatLabel={formatLabel} locationLabel={locationLabel} />
           <SpaEmail state={state} svc={svc} pract={pract} apptDate={apptDate} formatLabel={formatLabel} />
         </div>
@@ -119,9 +119,9 @@ export default function Confirmation() {
   );
 }
 
-function Row({ label, value, fullWidth = false }) {
+function Row({ label, value }) {
   return (
-    <div className={fullWidth ? 'sm:col-span-2' : ''}>
+    <div>
       <dt className="text-[11px] uppercase tracking-wider text-slate-500">{label}</dt>
       <dd className="text-sm font-medium text-coast-deep">{value}</dd>
     </div>

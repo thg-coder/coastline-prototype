@@ -34,9 +34,9 @@ export default function StepShell({
 
   return (
     <div className="flex flex-col">
-      <div className="animate-fadeIn px-5 py-5 sm:px-7 sm:py-6">{children}</div>
+      <div className="animate-fadeIn px-5 py-5">{children}</div>
       {(showBack || !hideContinue) && (
-        <div className="flex items-center justify-between gap-3 border-t border-slate-100 bg-white px-5 py-3 sm:px-7">
+        <div className="flex items-center justify-between gap-3 border-t border-slate-100 bg-white px-5 py-3">
           {showBack ? (
             <button
               type="button"

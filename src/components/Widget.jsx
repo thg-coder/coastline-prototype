@@ -27,7 +27,7 @@ export default function Widget() {
   const { state } = useBooking();
   const Screen = SCREENS[state.step] || ServiceSelection;
   return (
-    <div className="w-full max-w-2xl">
+    <div className="w-full max-w-[420px] self-start">
       <div className="overflow-hidden rounded-2xl bg-white shadow-widget ring-1 ring-slate-100">
         <Banner />
         <ProgressBar />

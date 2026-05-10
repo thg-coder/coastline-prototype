@@ -111,7 +111,7 @@ export default function CalendarSelection() {
     <StepShell canContinue={canContinue} onContinue={() => goNext()}>
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
-          <h2 className="text-lg font-semibold text-coast-deep sm:text-xl">Pick a time</h2>
+          <h2 className="text-lg font-semibold text-coast-deep ">Pick a time</h2>
           <p className="text-sm text-slate-500">
             All times shown in Eastern Time ({TIMEZONE_LABEL}).
           </p>
@@ -257,7 +257,7 @@ export default function CalendarSelection() {
               No remaining times for this day. Try another date.
             </p>
           ) : (
-            <div className="mt-2 -mx-1 flex gap-2 overflow-x-auto px-1 pb-1 no-scrollbar sm:grid sm:grid-cols-4 sm:gap-2 sm:overflow-visible">
+            <div className="mt-2 -mx-1 flex gap-2 overflow-x-auto px-1 pb-1 no-scrollbar">
               {slotsForRender.map((hhmm) => {
                 const isSelected = state.selectedTime === hhmm;
                 return (
@@ -266,7 +266,7 @@ export default function CalendarSelection() {
                     type="button"
                     onClick={() => handleSlotClick(hhmm)}
                     aria-pressed={isSelected}
-                    className={`shrink-0 whitespace-nowrap rounded-full border px-3 py-2 text-xs font-medium transition-all sm:rounded-lg ${
+                    className={`shrink-0 whitespace-nowrap rounded-full border px-3 py-2 text-xs font-medium transition-all ${
                       isSelected
                         ? 'border-coast-ocean bg-coast-ocean text-white shadow-sm'
                         : 'border-slate-200 bg-white text-coast-deep hover:border-coast-sea hover:bg-coast-sky/40'

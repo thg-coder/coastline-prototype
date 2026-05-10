@@ -106,15 +106,15 @@ export default function Checkout() {
       continueVariant="success"
     >
       <div>
-        <h2 className="text-lg font-semibold text-coast-deep sm:text-xl">Secure checkout</h2>
+        <h2 className="text-lg font-semibold text-coast-deep ">Secure checkout</h2>
         <p className="text-sm text-slate-500">
           Your consultation fee is charged now to hold the appointment.
         </p>
       </div>
 
       {/* Order summary — above on mobile, side-by-side on desktop */}
-      <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-[1fr_280px]">
-        <div className="order-2 lg:order-1">
+      <div className="mt-5 flex flex-col gap-5">
+        <div className="order-2">
           <div className="rounded-xl border border-slate-200 bg-white">
             <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
               <div className="flex items-center gap-2 text-sm font-semibold text-coast-deep">
@@ -185,7 +185,7 @@ export default function Checkout() {
           </div>
         </div>
 
-        <aside className="order-1 lg:order-2">
+        <aside className="order-1">
           <div className="rounded-xl border border-slate-200 bg-coast-cream/50 p-4">
             <h3 className="text-xs font-semibold uppercase tracking-widest text-coast-ocean">
               Order summary
