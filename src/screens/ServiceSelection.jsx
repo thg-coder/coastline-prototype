@@ -1,18 +1,99 @@
-import React, { useState } from 'react';
-import { Clock, DollarSign, Check, Video, MapPin } from 'lucide-react';
-import { SERVICES } from '../mockData.js';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Clock, DollarSign, Check, Video, MapPin, Search, X, ChevronDown } from 'lucide-react';
+import {
+  SERVICES,
+  SERVICE_CATEGORIES,
+  getCategoryForService,
+  getService,
+} from '../mockData.js';
 import { useBooking } from '../state/BookingContext.jsx';
 import StepShell from '../components/StepShell.jsx';
 import ConfirmDialog from '../components/ConfirmDialog.jsx';
 
 export default function ServiceSelection() {
   const { state, dispatch, goNext } = useBooking();
-  const [pendingServiceId, setPendingServiceId] = useState(null);
   const selectedId = state.serviceId;
 
+  const [pendingServiceId, setPendingServiceId] = useState(null);
+  const [searchInput, setSearchInput] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+
+  // Default expanded set: empty by default; auto-expand the category that
+  // contains the currently-selected service (e.g. user came back from Step 2).
+  const defaultExpanded = useMemo(() => {
+    const set = new Set();
+    if (selectedId) {
+      const cat = getCategoryForService(selectedId);
+      if (cat) set.add(cat.id);
+    }
+    return set;
+    // Computed once on mount based on initial selectedId; we don't recompute
+    // when selectedId changes mid-screen because user expansion takes over.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const [expanded, setExpanded] = useState(defaultExpanded);
+
+  // Debounce the search input (~150ms).
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(searchInput.trim().toLowerCase()), 150);
+    return () => clearTimeout(t);
+  }, [searchInput]);
+
+  // When search transitions from non-empty back to empty, reset categories
+  // to their default collapsed state (with the selected category re-expanded).
+  const prevDebouncedRef = useRef(debouncedSearch);
+  useEffect(() => {
+    if (prevDebouncedRef.current !== '' && debouncedSearch === '') {
+      setExpanded(new Set(defaultExpanded));
+    }
+    prevDebouncedRef.current = debouncedSearch;
+  }, [debouncedSearch, defaultExpanded]);
+
+  const isSearching = debouncedSearch.length > 0;
+
+  // Filter services per category according to current search query.
+  const categoriesWithMatches = useMemo(() => {
+    return SERVICE_CATEGORIES.map((cat) => {
+      const services = cat.serviceIds.map((id) => getService(id)).filter(Boolean);
+      const matching = isSearching
+        ? services.filter(
+            (s) =>
+              s.name.toLowerCase().includes(debouncedSearch) ||
+              s.description.toLowerCase().includes(debouncedSearch)
+          )
+        : services;
+      return { ...cat, services: matching, totalCount: services.length };
+    });
+  }, [debouncedSearch, isSearching]);
+
+  const visibleCategories = isSearching
+    ? categoriesWithMatches.filter((c) => c.services.length > 0)
+    : categoriesWithMatches;
+
+  const totalMatches = categoriesWithMatches.reduce((n, c) => n + c.services.length, 0);
+
+  function isExpanded(catId) {
+    if (isSearching) return true;
+    return expanded.has(catId);
+  }
+
+  function toggleCategory(catId) {
+    if (isSearching) return; // header taps are no-ops during search
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      if (next.has(catId)) next.delete(catId);
+      else next.add(catId);
+      return next;
+    });
+  }
+
   function handlePick(serviceId) {
-    if (selectedId && selectedId !== serviceId && (state.practitionerId || state.selectedTime)) {
-      // Warn before changing.
+    if (
+      selectedId &&
+      selectedId !== serviceId &&
+      (state.practitionerId || state.selectedTime)
+    ) {
       setPendingServiceId(serviceId);
       return;
     }
@@ -26,70 +107,158 @@ export default function ServiceSelection() {
 
   return (
     <>
-      <StepShell
-        canContinue={!!selectedId}
-        onContinue={() => goNext()}
-        continueLabel="Continue"
-      >
+      <StepShell canContinue={!!selectedId} onContinue={() => goNext()} continueLabel="Continue">
         <div>
-          <h2 className="text-lg font-semibold text-coast-deep">
-            Choose your consultation
-          </h2>
+          <h2 className="text-lg font-semibold text-coast-deep">Choose your consultation</h2>
           <p className="mt-1 text-sm text-slate-500">
-            Every booking starts with a consultation. Procedures are scheduled in person at your visit.
+            Every booking starts with a consultation. Procedures are scheduled in person at your
+            visit.
           </p>
         </div>
 
-        <ul className="mt-5 grid grid-cols-1 gap-3">
-          {SERVICES.map((svc) => {
-            const isSelected = selectedId === svc.id;
-            return (
-              <li key={svc.id}>
-                <button
-                  type="button"
-                  onClick={() => handlePick(svc.id)}
-                  aria-pressed={isSelected}
-                  className={`group relative flex w-full flex-col rounded-xl border p-4 text-left transition-all ${
-                    isSelected
-                      ? 'border-coast-ocean bg-coast-sky/40 shadow-sm ring-1 ring-coast-ocean/30'
-                      : 'border-slate-200 bg-white hover:border-coast-sea hover:shadow-sm'
-                  }`}
+        {/* Sticky search */}
+        <div className="sticky top-0 z-20 -mx-5 mt-4 bg-white px-5 pb-3 pt-2">
+          <label className="relative block">
+            <span className="sr-only">Search services</span>
+            <Search
+              size={16}
+              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+            />
+            <input
+              type="text"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder="Search services..."
+              className="block w-full rounded-xl border border-slate-200 bg-white py-2 pl-9 pr-9 text-sm text-coast-deep shadow-sm focus:border-coast-ocean focus:outline-none focus:ring-1 focus:ring-coast-ocean"
+              aria-label="Search services"
+            />
+            {searchInput && (
+              <button
+                type="button"
+                onClick={() => setSearchInput('')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+                aria-label="Clear search"
+              >
+                <X size={14} />
+              </button>
+            )}
+          </label>
+        </div>
+
+        {/* Categories or empty state */}
+        {isSearching && totalMatches === 0 ? (
+          <div className="mt-2 rounded-xl border border-dashed border-slate-200 bg-slate-50 p-5 text-center">
+            <p className="text-sm text-coast-deep">
+              No services match your search.
+            </p>
+            <p className="mt-1 text-xs text-slate-500">
+              Try a different keyword or browse by category below.
+            </p>
+          </div>
+        ) : (
+          <ul className="mt-1 space-y-2">
+            {visibleCategories.map((cat) => {
+              const open = isExpanded(cat.id);
+              const labelCount = isSearching ? cat.services.length : cat.totalCount;
+              return (
+                <li
+                  key={cat.id}
+                  className="overflow-hidden rounded-xl border border-slate-200 bg-white"
                 >
-                  {isSelected && (
-                    <span className="absolute right-3 top-3 inline-flex h-5 w-5 items-center justify-center rounded-full bg-coast-ocean text-white">
-                      <Check size={12} strokeWidth={3} />
+                  <button
+                    type="button"
+                    onClick={() => toggleCategory(cat.id)}
+                    aria-expanded={open}
+                    aria-controls={`cat-panel-${cat.id}`}
+                    disabled={isSearching}
+                    className={`flex w-full items-center justify-between px-4 py-3 text-left transition-colors ${
+                      isSearching
+                        ? 'cursor-default bg-coast-sky/30'
+                        : 'hover:bg-coast-sky/40 active:bg-coast-sky/60'
+                    }`}
+                  >
+                    <span className="flex items-baseline gap-2">
+                      <span className="text-base font-semibold tracking-tight text-coast-deep">
+                        {cat.label}
+                      </span>
+                      <span className="text-xs font-medium text-slate-400">({labelCount})</span>
                     </span>
-                  )}
-                  <h3 className="pr-6 text-sm font-semibold text-coast-deep">{svc.name}</h3>
-                  <p className="mt-1 line-clamp-2 text-xs text-slate-500">{svc.description}</p>
-                  <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-600">
-                    <span className="inline-flex items-center gap-1">
-                      <Clock size={12} className="text-coast-ocean" />
-                      {svc.durationMin} min
-                    </span>
-                    <span className="inline-flex items-center gap-1">
-                      <DollarSign size={12} className="text-coast-ocean" />
-                      ${svc.fee}
-                    </span>
-                    <span className="inline-flex items-center gap-1 text-slate-500">
-                      {svc.formats.includes('virtual') ? (
-                        <>
-                          <Video size={12} className="text-coast-sea" />
-                          Virtual or in-person
-                        </>
-                      ) : (
-                        <>
-                          <MapPin size={12} className="text-coast-sea" />
-                          In-person only
-                        </>
-                      )}
-                    </span>
+                    <ChevronDown
+                      size={18}
+                      className={`shrink-0 text-coast-ocean transition-transform duration-200 ${
+                        open ? 'rotate-180' : 'rotate-0'
+                      }`}
+                      aria-hidden="true"
+                    />
+                  </button>
+
+                  <div
+                    id={`cat-panel-${cat.id}`}
+                    className={`grid transition-[grid-template-rows] duration-200 ease-out ${
+                      open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+                    }`}
+                  >
+                    <div className="overflow-hidden">
+                      <div className="space-y-2 border-t border-slate-100 px-3 py-3">
+                        {cat.services.map((svc) => {
+                          const isSelected = selectedId === svc.id;
+                          return (
+                            <button
+                              key={svc.id}
+                              type="button"
+                              onClick={() => handlePick(svc.id)}
+                              aria-pressed={isSelected}
+                              className={`group relative flex w-full flex-col rounded-lg border p-3 text-left transition-all ${
+                                isSelected
+                                  ? 'border-coast-ocean bg-coast-sky/40 shadow-sm ring-1 ring-coast-ocean/30'
+                                  : 'border-slate-200 bg-white hover:border-coast-sea hover:shadow-sm'
+                              }`}
+                            >
+                              {isSelected && (
+                                <span className="absolute right-3 top-3 inline-flex h-5 w-5 items-center justify-center rounded-full bg-coast-ocean text-white">
+                                  <Check size={12} strokeWidth={3} />
+                                </span>
+                              )}
+                              <h3 className="pr-6 text-sm font-semibold text-coast-deep">
+                                {svc.name}
+                              </h3>
+                              <p className="mt-1 line-clamp-2 text-xs text-slate-500">
+                                {svc.description}
+                              </p>
+                              <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-600">
+                                <span className="inline-flex items-center gap-1">
+                                  <Clock size={12} className="text-coast-ocean" />
+                                  {svc.durationMin} min
+                                </span>
+                                <span className="inline-flex items-center gap-1">
+                                  <DollarSign size={12} className="text-coast-ocean" />
+                                  ${svc.fee}
+                                </span>
+                                <span className="inline-flex items-center gap-1 text-slate-500">
+                                  {svc.formats.includes('virtual') ? (
+                                    <>
+                                      <Video size={12} className="text-coast-sea" />
+                                      Virtual or in-person
+                                    </>
+                                  ) : (
+                                    <>
+                                      <MapPin size={12} className="text-coast-sea" />
+                                      In-person only
+                                    </>
+                                  )}
+                                </span>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
                   </div>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </StepShell>
 
       <ConfirmDialog

@@ -116,6 +116,21 @@ export const SERVICES = [
   },
 ];
 
+export const SERVICE_CATEGORIES = [
+  { id: 'injectables', label: 'Injectables', serviceIds: ['botox', 'filler'] },
+  { id: 'skin', label: 'Skin Treatments', serviceIds: ['microneedling', 'chemical_peel'] },
+  {
+    id: 'hair_body',
+    label: 'Hair & Body',
+    serviceIds: ['laser_hair', 'prp', 'body_contouring'],
+  },
+  { id: 'wellness', label: 'Wellness', serviceIds: ['iv_therapy'] },
+];
+
+export function getCategoryForService(serviceId) {
+  return SERVICE_CATEGORIES.find((c) => c.serviceIds.includes(serviceId)) || null;
+}
+
 export function getService(id) {
   return SERVICES.find((s) => s.id === id) || null;
 }
