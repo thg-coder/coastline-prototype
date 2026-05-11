@@ -10,7 +10,7 @@ export default function Banner() {
           <span className="text-base font-semibold tracking-tight">Coastline</span>
         </div>
         <span className="text-[11px] uppercase tracking-widest text-white/70">
-          Consultation booking
+          Book appointment
         </span>
       </div>
       {/* Subtle wave decoration */}

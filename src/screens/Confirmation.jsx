@@ -7,6 +7,7 @@ import {
   SPA_NAME_PLACEHOLDER,
   SPA_PHONE,
   SPA_ADDRESS_PLACEHOLDER,
+  SPA_DOMAIN_PLACEHOLDER,
   TIMEZONE_LABEL,
 } from '../mockData.js';
 import { formatTime12h, formatDateLong } from '../utils/format.js';
@@ -43,7 +44,7 @@ export default function Confirmation() {
           ? 'Virtual (link emailed)'
           : `${SPA_NAME_PLACEHOLDER}, ${SPA_ADDRESS_PLACEHOLDER}`,
     });
-    downloadIcs(`coastline-${state.serviceId}-${state.selectedDate}.ics`, ics);
+    downloadIcs(`booking-${state.serviceId}-${state.selectedDate}.ics`, ics);
   }
 
   return (
@@ -191,9 +192,8 @@ function PatientEmail({ state, svc, pract, apptDate, formatLabel, locationLabel 
         <div className="mt-4 rounded-lg bg-coast-cream/60 p-3 text-xs">
           <p className="font-semibold text-coast-deep">What to expect</p>
           <p className="mt-1 text-slate-600">
-            Plan to arrive 10 minutes early to complete check-in. Your consultation runs about{' '}
-            {svc?.durationMin} minutes and includes time to discuss goals, questions, and next
-            steps. Treatment, if applicable, will be scheduled separately.
+            Your appointment is confirmed. Please arrive 10 minutes early to complete intake
+            paperwork. If you need to reschedule, call us at the number on your confirmation.
           </p>
         </div>
 
@@ -222,7 +222,7 @@ function SpaEmail({ state, svc, pract, apptDate, formatLabel }) {
   return (
     <article className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
       <EmailHeader
-        from={{ name: 'Coastline <notifications@coastline.app>' }}
+        from={{ name: `${SPA_NAME_PLACEHOLDER} <bookings@${SPA_DOMAIN_PLACEHOLDER}>` }}
         to={`bookings@medspa.example`}
         subject={`New consultation booked — ${svc?.name || ''}`}
       />

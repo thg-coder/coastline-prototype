@@ -109,10 +109,9 @@ export default function ServiceSelection() {
     <>
       <StepShell canContinue={!!selectedId} onContinue={() => goNext()} continueLabel="Continue">
         <div>
-          <h2 className="text-lg font-semibold text-coast-deep">Choose your consultation</h2>
+          <h2 className="text-lg font-semibold text-coast-deep">Choose your treatment</h2>
           <p className="mt-1 text-sm text-slate-500">
-            Every booking starts with a consultation. Procedures are scheduled in person at your
-            visit.
+            Book your appointment in under a minute.
           </p>
         </div>
 

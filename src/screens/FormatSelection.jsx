@@ -26,12 +26,12 @@ export default function FormatSelection() {
         </p>
       </div>
 
-      <h3 className="mt-6 text-sm font-semibold text-coast-deep">Choose your consultation format</h3>
+      <h3 className="mt-6 text-sm font-semibold text-coast-deep">Choose your visit format</h3>
 
       <div className="mt-3 grid grid-cols-1 gap-3">
         <FormatCard
           icon={<Video size={20} />}
-          title="Virtual Consultation"
+          title="Virtual"
           subtitle="Meet with your provider over a secure video link."
           selected={state.format === 'virtual'}
           disabled={!virtualAllowed}
@@ -40,7 +40,7 @@ export default function FormatSelection() {
         />
         <FormatCard
           icon={<MapPin size={20} />}
-          title="In-Person Consultation"
+          title="In-Person"
           subtitle="Visit our office for a hands-on assessment."
           selected={state.format === 'in_person'}
           onClick={() => pick('in_person')}

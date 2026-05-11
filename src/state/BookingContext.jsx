@@ -155,8 +155,8 @@ export function BookingProvider({ children }) {
   // Browser back-button interception.
   useEffect(() => {
     // Push initial sentinel state so we can intercept back navigations.
-    if (window.history.state?.coastline !== true) {
-      window.history.pushState({ coastline: true }, '');
+    if (window.history.state?.rivrBooking !== true) {
+      window.history.pushState({ rivrBooking: true }, '');
     }
     const handler = (e) => {
       // If the user is on Step 1, allow native back navigation by NOT
@@ -165,7 +165,7 @@ export function BookingProvider({ children }) {
       // For any later step, treat as in-widget back.
       goBack();
       // Re-anchor history so future pops keep firing.
-      window.history.pushState({ coastline: true }, '');
+      window.history.pushState({ rivrBooking: true }, '');
     };
     window.addEventListener('popstate', handler);
     return () => window.removeEventListener('popstate', handler);

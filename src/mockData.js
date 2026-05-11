@@ -4,6 +4,7 @@
 export const SPA_PHONE = '(555) 123-4567';
 export const SPA_NAME_PLACEHOLDER = '[Med Spa Name]';
 export const SPA_ADDRESS_PLACEHOLDER = '[Med Spa Address]';
+export const SPA_DOMAIN_PLACEHOLDER = '[practice-domain.com]';
 export const TIMEZONE_LABEL = 'ET';
 
 export const PRACTITIONERS = {
@@ -44,8 +45,8 @@ export const PRACTITIONERS = {
 export const SERVICES = [
   {
     id: 'botox',
-    name: 'Botox Consultation',
-    description: 'Personalized plan for wrinkle softening and prevention with neuromodulators.',
+    name: 'Botox',
+    description: 'Wrinkle softening and prevention with FDA-approved neuromodulators.',
     durationMin: 30,
     fee: 50,
     formats: ['virtual', 'in_person'],
@@ -53,8 +54,8 @@ export const SERVICES = [
   },
   {
     id: 'filler',
-    name: 'Dermal Filler Consultation',
-    description: 'Discuss volume, contour, and lip enhancement goals with a licensed injector.',
+    name: 'Dermal Filler',
+    description: 'Volume restoration and contouring with hyaluronic acid filler.',
     durationMin: 30,
     fee: 75,
     formats: ['in_person'],
@@ -62,8 +63,8 @@ export const SERVICES = [
   },
   {
     id: 'microneedling',
-    name: 'Microneedling Consultation',
-    description: 'Skin texture, scarring, and tone evaluation for collagen-induction therapy.',
+    name: 'Microneedling',
+    description: 'Collagen-induction therapy to refine texture, scars, and tone.',
     durationMin: 30,
     fee: 50,
     formats: ['virtual', 'in_person'],
@@ -71,8 +72,8 @@ export const SERVICES = [
   },
   {
     id: 'laser_hair',
-    name: 'Laser Hair Removal Consultation',
-    description: 'Skin-type assessment and treatment planning for long-term hair reduction.',
+    name: 'Laser Hair Removal',
+    description: 'Long-term hair reduction with targeted laser energy.',
     durationMin: 45,
     fee: 75,
     formats: ['in_person'],
@@ -80,8 +81,8 @@ export const SERVICES = [
   },
   {
     id: 'chemical_peel',
-    name: 'Chemical Peel Consultation',
-    description: 'Tailored peel selection for tone, texture, and pigmentation concerns.',
+    name: 'Chemical Peel',
+    description: 'Resurfacing peel for uneven tone, texture, and pigmentation.',
     durationMin: 30,
     fee: 50,
     formats: ['virtual', 'in_person'],
@@ -89,8 +90,8 @@ export const SERVICES = [
   },
   {
     id: 'iv_therapy',
-    name: 'IV Therapy Consultation',
-    description: 'Wellness intake to design a hydration and micronutrient infusion plan.',
+    name: 'IV Therapy',
+    description: 'Vitamin and hydration drip in our wellness lounge.',
     durationMin: 20,
     fee: 40,
     formats: ['virtual', 'in_person'],
@@ -98,8 +99,8 @@ export const SERVICES = [
   },
   {
     id: 'prp',
-    name: 'PRP / Hair Restoration Consultation',
-    description: 'Scalp evaluation and platelet-rich plasma protocol planning for hair regrowth.',
+    name: 'PRP / Hair Restoration',
+    description: 'Platelet-rich plasma scalp therapy to support hair regrowth.',
     durationMin: 45,
     fee: 100,
     formats: ['in_person'],
@@ -107,8 +108,8 @@ export const SERVICES = [
   },
   {
     id: 'body_contouring',
-    name: 'Body Contouring Consultation',
-    description: 'Non-invasive contouring options reviewed against your goals and timeline.',
+    name: 'Body Contouring',
+    description: 'Non-invasive fat reduction and skin tightening for targeted areas.',
     durationMin: 45,
     fee: 100,
     formats: ['in_person'],
