@@ -3,31 +3,33 @@ import { useBooking } from '../state/BookingContext.jsx';
 
 const LABELS = {
   service: 'Service',
-  format: 'Format',
-  practitioner: 'Provider',
-  calendar: 'Time',
-  intake: 'Details',
-  policy: 'Policy',
+  gate: 'Patient',
+  schedule: 'Schedule',
   checkout: 'Payment',
   confirmation: 'Done',
 };
 
 export default function ProgressBar() {
   const { stepIndex, totalSteps, state } = useBooking();
-  const pct = ((stepIndex + 1) / totalSteps) * 100;
+
+  // On the terminal CONFIRMATION screen there is no "Step X of N" — hide the bar.
+  if (stepIndex < 0) return null;
+
+  const current = stepIndex + 1;
+  const pct = totalSteps > 0 ? (current / totalSteps) * 100 : 0;
 
   return (
     <div
       className="border-b border-slate-100 bg-white px-5 pt-4 pb-3"
       role="progressbar"
-      aria-valuenow={stepIndex + 1}
+      aria-valuenow={current}
       aria-valuemin={1}
       aria-valuemax={totalSteps}
-      aria-label={`Step ${stepIndex + 1} of ${totalSteps}: ${LABELS[state.step]}`}
+      aria-label={`Step ${current} of ${totalSteps}: ${LABELS[state.step]}`}
     >
       <div className="mb-2 flex items-center justify-between text-[11px] uppercase tracking-widest text-slate-400">
         <span>
-          Step {stepIndex + 1} of {totalSteps}
+          Step {current} of {totalSteps}
         </span>
         <span className="text-coast-ocean">{LABELS[state.step]}</span>
       </div>

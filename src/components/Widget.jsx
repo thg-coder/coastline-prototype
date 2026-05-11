@@ -4,21 +4,15 @@ import ProgressBar from './ProgressBar.jsx';
 import Footer from './Footer.jsx';
 import { useBooking, STEPS } from '../state/BookingContext.jsx';
 import ServiceSelection from '../screens/ServiceSelection.jsx';
-import FormatSelection from '../screens/FormatSelection.jsx';
-import PractitionerSelection from '../screens/PractitionerSelection.jsx';
-import CalendarSelection from '../screens/CalendarSelection.jsx';
-import IntakeForm from '../screens/IntakeForm.jsx';
-import CancellationPolicy from '../screens/CancellationPolicy.jsx';
+import PatientGate from '../screens/PatientGate.jsx';
+import Schedule from '../screens/Schedule.jsx';
 import Checkout from '../screens/Checkout.jsx';
 import Confirmation from '../screens/Confirmation.jsx';
 
 const SCREENS = {
   [STEPS.SERVICE]: ServiceSelection,
-  [STEPS.FORMAT]: FormatSelection,
-  [STEPS.PRACTITIONER]: PractitionerSelection,
-  [STEPS.CALENDAR]: CalendarSelection,
-  [STEPS.INTAKE]: IntakeForm,
-  [STEPS.POLICY]: CancellationPolicy,
+  [STEPS.GATE]: PatientGate,
+  [STEPS.SCHEDULE]: Schedule,
   [STEPS.CHECKOUT]: Checkout,
   [STEPS.CONFIRMATION]: Confirmation,
 };

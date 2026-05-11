@@ -89,11 +89,10 @@ export default function ServiceSelection() {
   }
 
   function handlePick(serviceId) {
-    if (
-      selectedId &&
-      selectedId !== serviceId &&
-      (state.practitionerId || state.selectedTime)
-    ) {
+    // Re-tapping the already-selected card is a no-op (don't reset format etc.).
+    if (selectedId === serviceId) return;
+    // Only confirm if switching away would discard a picked appointment time.
+    if (selectedId && state.selectedTime) {
       setPendingServiceId(serviceId);
       return;
     }
@@ -201,53 +200,80 @@ export default function ServiceSelection() {
                       <div className="space-y-2 border-t border-slate-100 px-3 py-3">
                         {cat.services.map((svc) => {
                           const isSelected = selectedId === svc.id;
+                          const multiFormat = svc.formats.length > 1;
                           return (
-                            <button
-                              key={svc.id}
-                              type="button"
-                              onClick={() => handlePick(svc.id)}
-                              aria-pressed={isSelected}
-                              className={`group relative flex w-full flex-col rounded-lg border p-3 text-left transition-all ${
-                                isSelected
-                                  ? 'border-coast-ocean bg-coast-sky/40 shadow-sm ring-1 ring-coast-ocean/30'
-                                  : 'border-slate-200 bg-white hover:border-coast-sea hover:shadow-sm'
-                              }`}
-                            >
-                              {isSelected && (
-                                <span className="absolute right-3 top-3 inline-flex h-5 w-5 items-center justify-center rounded-full bg-coast-ocean text-white">
-                                  <Check size={12} strokeWidth={3} />
-                                </span>
-                              )}
-                              <h3 className="pr-6 text-sm font-semibold text-coast-deep">
-                                {svc.name}
-                              </h3>
-                              <p className="mt-1 line-clamp-2 text-xs text-slate-500">
-                                {svc.description}
-                              </p>
-                              <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-600">
-                                <span className="inline-flex items-center gap-1">
-                                  <Clock size={12} className="text-coast-ocean" />
-                                  {svc.durationMin} min
-                                </span>
-                                <span className="inline-flex items-center gap-1">
-                                  <DollarSign size={12} className="text-coast-ocean" />
-                                  ${svc.fee}
-                                </span>
-                                <span className="inline-flex items-center gap-1 text-slate-500">
-                                  {svc.formats.includes('virtual') ? (
-                                    <>
-                                      <Video size={12} className="text-coast-sea" />
-                                      Virtual or in-person
-                                    </>
-                                  ) : (
-                                    <>
+                            <div key={svc.id}>
+                              <button
+                                type="button"
+                                onClick={() => handlePick(svc.id)}
+                                aria-pressed={isSelected}
+                                className={`group relative flex w-full flex-col rounded-lg border p-3 text-left transition-all ${
+                                  isSelected
+                                    ? 'border-coast-ocean bg-coast-sky/40 shadow-sm ring-1 ring-coast-ocean/30'
+                                    : 'border-slate-200 bg-white hover:border-coast-sea hover:shadow-sm'
+                                }`}
+                              >
+                                {isSelected && (
+                                  <span className="absolute right-3 top-3 inline-flex h-5 w-5 items-center justify-center rounded-full bg-coast-ocean text-white">
+                                    <Check size={12} strokeWidth={3} />
+                                  </span>
+                                )}
+                                <h3 className="pr-6 text-sm font-semibold text-coast-deep">
+                                  {svc.name}
+                                </h3>
+                                <p className="mt-1 line-clamp-2 text-xs text-slate-500">
+                                  {svc.description}
+                                </p>
+                                <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-600">
+                                  <span className="inline-flex items-center gap-1">
+                                    <Clock size={12} className="text-coast-ocean" />
+                                    {svc.durationMin} min
+                                  </span>
+                                  <span className="inline-flex items-center gap-1">
+                                    <DollarSign size={12} className="text-coast-ocean" />
+                                    ${svc.fee}
+                                  </span>
+                                  {!multiFormat && (
+                                    <span className="inline-flex items-center gap-1 text-slate-500">
                                       <MapPin size={12} className="text-coast-sea" />
                                       In-person only
-                                    </>
+                                    </span>
                                   )}
-                                </span>
-                              </div>
-                            </button>
+                                  {multiFormat && !isSelected && (
+                                    <span className="inline-flex items-center gap-1 text-slate-500">
+                                      <Video size={12} className="text-coast-sea" />
+                                      Virtual or in-person
+                                    </span>
+                                  )}
+                                </div>
+                              </button>
+
+                              {isSelected && multiFormat && (
+                                <div className="mt-1.5 flex items-center gap-2 rounded-lg bg-coast-sky/40 px-3 py-2">
+                                  <span className="text-[11px] font-semibold uppercase tracking-wide text-coast-deep">
+                                    Format
+                                  </span>
+                                  <div className="flex gap-1">
+                                    <FormatToggle
+                                      active={state.format === 'in_person'}
+                                      onClick={() =>
+                                        dispatch({ type: 'SET_FORMAT', format: 'in_person' })
+                                      }
+                                      icon={<MapPin size={12} />}
+                                      label="In-person"
+                                    />
+                                    <FormatToggle
+                                      active={state.format === 'virtual'}
+                                      onClick={() =>
+                                        dispatch({ type: 'SET_FORMAT', format: 'virtual' })
+                                      }
+                                      icon={<Video size={12} />}
+                                      label="Virtual"
+                                    />
+                                  </div>
+                                </div>
+                              )}
+                            </div>
                           );
                         })}
                       </div>
@@ -262,13 +288,31 @@ export default function ServiceSelection() {
 
       <ConfirmDialog
         open={!!pendingServiceId}
-        title="Change your service?"
-        body="Changing your service will reset your practitioner and time selection. Your contact info will be saved."
-        confirmLabel="Change service"
+        title="Change your treatment?"
+        body="Changing your treatment will reset your selected appointment time. Your contact info will be saved."
+        confirmLabel="Change treatment"
         cancelLabel="Keep current"
         onConfirm={confirmServiceChange}
         onCancel={() => setPendingServiceId(null)}
       />
     </>
+  );
+}
+
+function FormatToggle({ active, onClick, icon, label }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors ${
+        active
+          ? 'bg-coast-ocean text-white'
+          : 'bg-white text-coast-deep ring-1 ring-slate-200 hover:bg-coast-sky/40'
+      }`}
+    >
+      {icon}
+      {label}
+    </button>
   );
 }
