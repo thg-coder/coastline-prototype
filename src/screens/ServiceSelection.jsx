@@ -7,6 +7,7 @@ import {
   getService,
 } from '../mockData.js';
 import { useBooking } from '../state/BookingContext.jsx';
+import { priceLabel } from '../utils/pricing.js';
 import StepShell from '../components/StepShell.jsx';
 import ConfirmDialog from '../components/ConfirmDialog.jsx';
 
@@ -229,10 +230,12 @@ export default function ServiceSelection() {
                                     <Clock size={12} className="text-coast-ocean" />
                                     {svc.durationMin} min
                                   </span>
-                                  <span className="inline-flex items-center gap-1">
-                                    <DollarSign size={12} className="text-coast-ocean" />
-                                    ${svc.fee}
-                                  </span>
+                                  {priceLabel(svc) && (
+                                    <span className="inline-flex items-center gap-1">
+                                      <DollarSign size={12} className="text-coast-ocean" />
+                                      {priceLabel(svc)}
+                                    </span>
+                                  )}
                                   {!multiFormat && (
                                     <span className="inline-flex items-center gap-1 text-slate-500">
                                       <MapPin size={12} className="text-coast-sea" />

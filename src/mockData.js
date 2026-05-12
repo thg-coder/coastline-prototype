@@ -1,10 +1,8 @@
 // Central mock data for the Coastline prototype.
 // Edit here to tweak services, practitioners, or how availability is generated.
+// Practice identity (name, address, phone, branding, etc.) lives in
+// src/config/siteConfig.js, not here.
 
-export const SPA_PHONE = '(555) 123-4567';
-export const SPA_NAME_PLACEHOLDER = '[Med Spa Name]';
-export const SPA_ADDRESS_PLACEHOLDER = '[Med Spa Address]';
-export const SPA_DOMAIN_PLACEHOLDER = '[practice-domain.com]';
 export const TIMEZONE_LABEL = 'ET';
 
 export const PRACTITIONERS = {
@@ -42,9 +40,11 @@ export const PRACTITIONERS = {
   },
 };
 
-// `requiresDeposit` controls whether the Checkout/payment stage is shown.
-// Phase B: false for every service (no deposit collected). Phase D will make
-// this per-practice configurable.
+// Each service may optionally carry:
+//   requiresDeposit:  boolean — overrides global siteConfig.requiresDeposit
+//   pricingVisibility: 'show' | 'starting_at' | 'hide'
+//     — optional per-service override of global siteConfig.pricingVisibility
+// Both are left unset here so every service falls through to the global config.
 export const SERVICES = [
   {
     id: 'botox',
@@ -52,7 +52,6 @@ export const SERVICES = [
     description: 'Wrinkle softening and prevention with FDA-approved neuromodulators.',
     durationMin: 30,
     fee: 50,
-    requiresDeposit: false,
     formats: ['virtual', 'in_person'],
     practitionerIds: ['chen', 'martinez'],
   },
@@ -62,7 +61,6 @@ export const SERVICES = [
     description: 'Volume restoration and contouring with hyaluronic acid filler.',
     durationMin: 30,
     fee: 75,
-    requiresDeposit: false,
     formats: ['in_person'],
     practitionerIds: ['chen', 'martinez'],
   },
@@ -72,7 +70,6 @@ export const SERVICES = [
     description: 'Collagen-induction therapy to refine texture, scars, and tone.',
     durationMin: 30,
     fee: 50,
-    requiresDeposit: false,
     formats: ['virtual', 'in_person'],
     practitionerIds: ['reyes'],
   },
@@ -82,7 +79,6 @@ export const SERVICES = [
     description: 'Long-term hair reduction with targeted laser energy.',
     durationMin: 45,
     fee: 75,
-    requiresDeposit: false,
     formats: ['in_person'],
     practitionerIds: ['chen', 'reyes'],
   },
@@ -92,7 +88,6 @@ export const SERVICES = [
     description: 'Resurfacing peel for uneven tone, texture, and pigmentation.',
     durationMin: 30,
     fee: 50,
-    requiresDeposit: false,
     formats: ['virtual', 'in_person'],
     practitionerIds: ['reyes'],
   },
@@ -102,7 +97,6 @@ export const SERVICES = [
     description: 'Vitamin and hydration drip in our wellness lounge.',
     durationMin: 20,
     fee: 40,
-    requiresDeposit: false,
     formats: ['virtual', 'in_person'],
     practitionerIds: ['park'],
   },
@@ -112,7 +106,6 @@ export const SERVICES = [
     description: 'Platelet-rich plasma scalp therapy to support hair regrowth.',
     durationMin: 45,
     fee: 100,
-    requiresDeposit: false,
     formats: ['in_person'],
     practitionerIds: ['chen', 'martinez', 'park'],
   },
@@ -122,16 +115,10 @@ export const SERVICES = [
     description: 'Non-invasive fat reduction and skin tightening for targeted areas.',
     durationMin: 45,
     fee: 100,
-    requiresDeposit: false,
     formats: ['in_person'],
     practitionerIds: ['chen', 'park'],
   },
 ];
-
-export function serviceRequiresDeposit(serviceId) {
-  const svc = getService(serviceId);
-  return !!(svc && svc.requiresDeposit);
-}
 
 export const SERVICE_CATEGORIES = [
   { id: 'injectables', label: 'Injectables', serviceIds: ['botox', 'filler'] },

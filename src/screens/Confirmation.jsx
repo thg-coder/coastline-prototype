@@ -1,18 +1,14 @@
 import React from 'react';
 import { CheckCircle2, Calendar, RefreshCw, Mail } from 'lucide-react';
 import { useBooking } from '../state/BookingContext.jsx';
-import {
-  getService,
-  getPractitioner,
-  SPA_NAME_PLACEHOLDER,
-  SPA_PHONE,
-  SPA_ADDRESS_PLACEHOLDER,
-  SPA_DOMAIN_PLACEHOLDER,
-  TIMEZONE_LABEL,
-} from '../mockData.js';
+import { getService, getPractitioner, TIMEZONE_LABEL } from '../mockData.js';
+import { siteConfig } from '../config/siteConfig.js';
+import { priceLabel } from '../utils/pricing.js';
 import { formatTime12h, formatDateLong } from '../utils/format.js';
 import { buildIcs, downloadIcs } from '../utils/ics.js';
 import StepShell from '../components/StepShell.jsx';
+
+const emailSender = `${siteConfig.emailSenderName} <${siteConfig.emailSenderAddress}>`;
 
 export default function Confirmation() {
   const { state, reset } = useBooking();
@@ -30,22 +26,23 @@ export default function Confirmation() {
   const locationLabel =
     state.format === 'virtual'
       ? 'Virtual link will be emailed'
-      : `${SPA_NAME_PLACEHOLDER} · ${SPA_ADDRESS_PLACEHOLDER}`;
+      : `${siteConfig.practiceName} · ${siteConfig.practiceAddress}`;
   // Whether a real payment was taken (only when the Checkout step ran, i.e.
   // the service required a deposit). Suppress all payment artifacts otherwise.
   const paid = !!state.payment.completedAt;
+  const price = priceLabel(svc); // string or null when pricing is hidden
 
   function handleAddToCalendar() {
     if (!apptDate || !svc) return;
     const ics = buildIcs({
       start: apptDate,
       durationMin: svc.durationMin,
-      summary: `${svc.name} — ${SPA_NAME_PLACEHOLDER}`,
-      description: `Appointment with ${pract?.name || 'your practitioner'}.\n\nFormat: ${formatLabel}\nQuestions or to reschedule, call ${SPA_PHONE}.`,
+      summary: `${svc.name} — ${siteConfig.practiceName}`,
+      description: `Appointment with ${pract?.name || 'your practitioner'}.\n\nFormat: ${formatLabel}\nQuestions or to reschedule, call ${siteConfig.practicePhone}.`,
       location:
         state.format === 'virtual'
           ? 'Virtual (link emailed)'
-          : `${SPA_NAME_PLACEHOLDER}, ${SPA_ADDRESS_PLACEHOLDER}`,
+          : `${siteConfig.practiceName}, ${siteConfig.practiceAddress}`,
     });
     downloadIcs(`booking-${state.serviceId}-${state.selectedDate}.ics`, ics);
   }
@@ -86,7 +83,7 @@ export default function Confirmation() {
           <Row label="Location" value={locationLabel} />
           {paid && (
             <>
-              <Row label="Fee paid" value={`$${svc?.fee || 0}`} />
+              {price && <Row label="Fee paid" value={price} />}
               <Row
                 label="Card"
                 value={state.payment.cardLast4 ? `•••• ${state.payment.cardLast4}` : '—'}
@@ -119,8 +116,8 @@ export default function Confirmation() {
           <Mail size={12} className="text-coast-ocean" /> Email previews
         </div>
         <div className="grid grid-cols-1 gap-4">
-          <PatientEmail state={state} svc={svc} pract={pract} apptDate={apptDate} formatLabel={formatLabel} locationLabel={locationLabel} paid={paid} />
-          <SpaEmail state={state} svc={svc} pract={pract} apptDate={apptDate} formatLabel={formatLabel} paid={paid} />
+          <PatientEmail state={state} svc={svc} pract={pract} apptDate={apptDate} formatLabel={formatLabel} locationLabel={locationLabel} paid={paid} price={price} />
+          <SpaEmail state={state} svc={svc} pract={pract} apptDate={apptDate} formatLabel={formatLabel} paid={paid} price={price} />
         </div>
       </div>
     </StepShell>
@@ -152,11 +149,11 @@ function EmailHeader({ from, to, subject }) {
   );
 }
 
-function PatientEmail({ state, svc, pract, apptDate, formatLabel, locationLabel, paid }) {
+function PatientEmail({ state, svc, pract, apptDate, formatLabel, locationLabel, paid, price }) {
   return (
     <article className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
       <EmailHeader
-        from={{ name: `${SPA_NAME_PLACEHOLDER} <bookings@medspa.example>` }}
+        from={{ name: emailSender }}
         to={state.intake.email || 'you@example.com'}
         subject={`Your ${svc?.name || 'appointment'} is confirmed`}
       />
@@ -204,11 +201,11 @@ function PatientEmail({ state, svc, pract, apptDate, formatLabel, locationLabel,
           </p>
         </div>
 
-        {paid && (
+        {paid && price && (
           <div className="mt-3 rounded-lg border border-slate-200 p-3 text-xs">
             <p className="font-semibold text-coast-deep">Receipt</p>
             <p className="mt-1 text-slate-600">
-              Service fee: <span className="font-medium text-slate-800">${svc?.fee}</span> ·
+              Service fee: <span className="font-medium text-slate-800">{price}</span> ·
               Card ending {state.payment.cardLast4 || '••••'}
             </p>
           </div>
@@ -216,23 +213,23 @@ function PatientEmail({ state, svc, pract, apptDate, formatLabel, locationLabel,
 
         <p className="mt-4 text-xs text-slate-500">
           Need to cancel or reschedule? Please call{' '}
-          <span className="font-semibold text-coast-deep">{SPA_PHONE}</span>. Cancellations cannot
-          be processed online.
+          <span className="font-semibold text-coast-deep">{siteConfig.practicePhone}</span>.
+          Cancellations cannot be processed online.
         </p>
         <p className="mt-3 text-xs text-slate-400">
-          {SPA_NAME_PLACEHOLDER} · {SPA_ADDRESS_PLACEHOLDER} · {SPA_PHONE}
+          {siteConfig.practiceName} · {siteConfig.practiceAddress} · {siteConfig.practicePhone}
         </p>
       </div>
     </article>
   );
 }
 
-function SpaEmail({ state, svc, pract, apptDate, formatLabel, paid }) {
+function SpaEmail({ state, svc, pract, apptDate, formatLabel, paid, price }) {
   return (
     <article className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
       <EmailHeader
-        from={{ name: `${SPA_NAME_PLACEHOLDER} <bookings@${SPA_DOMAIN_PLACEHOLDER}>` }}
-        to={`bookings@medspa.example`}
+        from={{ name: emailSender }}
+        to={siteConfig.emailSenderAddress}
         subject={`New appointment booked — ${svc?.name || ''}`}
       />
       <div className="p-5 text-sm text-slate-700">
@@ -301,9 +298,9 @@ function SpaEmail({ state, svc, pract, apptDate, formatLabel, paid }) {
           </ul>
         </div>
 
-        {paid && (
+        {paid && price && (
           <div className="mt-3 rounded-lg bg-emerald-50 p-3 text-xs text-emerald-800">
-            Payment confirmed: ${svc?.fee} on card ending {state.payment.cardLast4 || '••••'}.
+            Payment confirmed: {price} on card ending {state.payment.cardLast4 || '••••'}.
           </div>
         )}
       </div>

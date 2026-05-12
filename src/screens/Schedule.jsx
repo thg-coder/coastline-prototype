@@ -11,14 +11,8 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import { useBooking } from '../state/BookingContext.jsx';
-import {
-  getService,
-  getPractitioner,
-  formatDateKey,
-  SPA_PHONE,
-  SPA_NAME_PLACEHOLDER,
-  TIMEZONE_LABEL,
-} from '../mockData.js';
+import { getService, getPractitioner, formatDateKey, TIMEZONE_LABEL } from '../mockData.js';
+import { siteConfig } from '../config/siteConfig.js';
 import { formatTime12h, formatPhone } from '../utils/format.js';
 import {
   validateEmail,
@@ -30,6 +24,16 @@ import StepShell from '../components/StepShell.jsx';
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const REFERRAL_OPTIONS = ['Google', 'Instagram', 'Friend/Family', 'Yelp', 'Other'];
+
+const STATE_NAMES = {
+  GA: 'Georgia',
+  FL: 'Florida',
+  NC: 'North Carolina',
+  SC: 'South Carolina',
+  TN: 'Tennessee',
+  AL: 'Alabama',
+};
+const getStateName = (code) => STATE_NAMES[code] || 'your state';
 
 function startOfMonth(d) {
   return new Date(d.getFullYear(), d.getMonth(), 1);
@@ -217,8 +221,9 @@ export default function Schedule() {
           <Info size={14} className="mt-[2px] shrink-0" />
           <span>
             Heads up — since this is your first visit with us, you'll meet your provider for a
-            brief good-faith exam before treatment. Your treatment session can be booked right
-            after, on the same visit when possible.
+            brief good-faith exam before treatment. This is required in{' '}
+            {getStateName(siteConfig.state)} and supports your safety. Your treatment session can
+            be booked right after, on the same visit when possible.
           </span>
         </div>
       )}
@@ -244,7 +249,7 @@ export default function Schedule() {
             </>
           ) : (
             <>
-              <MapPin size={12} /> In-person at {SPA_NAME_PLACEHOLDER}
+              <MapPin size={12} /> In-person at {siteConfig.practiceName}
             </>
           )}
         </span>
@@ -573,8 +578,8 @@ export default function Schedule() {
               <Phone size={18} className="mt-0.5 shrink-0 text-coast-ocean" />
               <p className="text-sm leading-relaxed text-coast-deep">
                 To cancel or reschedule, please call us at{' '}
-                <span className="font-semibold">{SPA_PHONE}</span> — we don't process changes
-                through this widget. A day's notice is appreciated when you can.
+                <span className="font-semibold">{siteConfig.practicePhone}</span> — we don't
+                process changes through this widget. A day's notice is appreciated when you can.
               </p>
             </div>
           </div>

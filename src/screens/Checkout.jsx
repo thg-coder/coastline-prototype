@@ -1,7 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { Lock, CreditCard, Info } from 'lucide-react';
 import { useBooking } from '../state/BookingContext.jsx';
-import { getService, getPractitioner, SPA_NAME_PLACEHOLDER, TIMEZONE_LABEL } from '../mockData.js';
+import { getService, getPractitioner, TIMEZONE_LABEL } from '../mockData.js';
+import { siteConfig } from '../config/siteConfig.js';
+import { priceLabel } from '../utils/pricing.js';
 import {
   formatCardNumber,
   formatExpiry,
@@ -207,13 +209,15 @@ export default function Checkout() {
               />
               <Row
                 label="Format"
-                value={state.format === 'virtual' ? 'Virtual' : `In-person · ${SPA_NAME_PLACEHOLDER}`}
+                value={state.format === 'virtual' ? 'Virtual' : `In-person · ${siteConfig.practiceName}`}
               />
             </dl>
             <hr className="my-3 border-slate-200" />
             <div className="flex items-center justify-between text-sm">
               <span className="text-slate-600">Deposit</span>
-              <span className="text-base font-semibold text-coast-deep">${svc?.fee || 0}</span>
+              {priceLabel(svc) && (
+                <span className="text-base font-semibold text-coast-deep">{priceLabel(svc)}</span>
+              )}
             </div>
             <p className="mt-2 text-[11px] text-slate-500">
               Charged today to confirm your booking. {apptDate ? formatDateLong(apptDate) : ''}

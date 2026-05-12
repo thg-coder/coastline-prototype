@@ -3,8 +3,8 @@ import {
   generateAvailability,
   getService,
   getPractitionersForService,
-  serviceRequiresDeposit,
 } from '../mockData.js';
+import { siteConfig } from '../config/siteConfig.js';
 import { loadState, saveState, clearState } from '../utils/storage.js';
 
 const BookingContext = createContext(null);
@@ -31,11 +31,12 @@ const ALL_STEPS = [
 const VALID_STEPS = new Set(Object.values(STEPS));
 
 // The active step list for the current booking. CHECKOUT is included only when
-// the selected service requires a deposit (Phase B: never — every service has
-// requiresDeposit: false, so this always resolves to the 4-stage list).
+// a deposit is required — a per-service `requiresDeposit` override if present,
+// otherwise the global siteConfig flag.
 export function getActiveSteps(serviceId) {
-  const includeCheckout = serviceRequiresDeposit(serviceId);
-  return ALL_STEPS.filter((s) => s !== STEPS.CHECKOUT || includeCheckout);
+  const svc = getService(serviceId);
+  const requiresDeposit = svc?.requiresDeposit ?? siteConfig.requiresDeposit;
+  return ALL_STEPS.filter((s) => s !== STEPS.CHECKOUT || requiresDeposit);
 }
 
 function defaultFormatFor(svc) {
