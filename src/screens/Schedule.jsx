@@ -217,8 +217,9 @@ export default function Schedule() {
         <div className="mb-4 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs leading-relaxed text-amber-900">
           <Info size={14} className="mt-[2px] shrink-0" />
           <span>
-            This appointment will be your initial visit and good-faith exam, required before
-            treatment in your state. Treatment sessions can be booked after.
+            Heads up — since this is your first visit with us, you'll meet your provider for a
+            brief good-faith exam before treatment. Your treatment session can be booked right
+            after, on the same visit when possible.
           </span>
         </div>
       )}

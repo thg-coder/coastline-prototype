@@ -108,7 +108,7 @@ export default function Checkout() {
       <div>
         <h2 className="text-lg font-semibold text-coast-deep ">Secure checkout</h2>
         <p className="text-sm text-slate-500">
-          Your consultation fee is charged now to hold the appointment.
+          Your deposit is charged now to hold the appointment.
         </p>
       </div>
 
@@ -212,7 +212,7 @@ export default function Checkout() {
             </dl>
             <hr className="my-3 border-slate-200" />
             <div className="flex items-center justify-between text-sm">
-              <span className="text-slate-600">Consultation fee</span>
+              <span className="text-slate-600">Deposit</span>
               <span className="text-base font-semibold text-coast-deep">${svc?.fee || 0}</span>
             </div>
             <p className="mt-2 text-[11px] text-slate-500">

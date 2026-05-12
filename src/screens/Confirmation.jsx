@@ -31,6 +31,9 @@ export default function Confirmation() {
     state.format === 'virtual'
       ? 'Virtual link will be emailed'
       : `${SPA_NAME_PLACEHOLDER} · ${SPA_ADDRESS_PLACEHOLDER}`;
+  // Whether a real payment was taken (only when the Checkout step ran, i.e.
+  // the service required a deposit). Suppress all payment artifacts otherwise.
+  const paid = !!state.payment.completedAt;
 
   function handleAddToCalendar() {
     if (!apptDate || !svc) return;
@@ -38,7 +41,7 @@ export default function Confirmation() {
       start: apptDate,
       durationMin: svc.durationMin,
       summary: `${svc.name} — ${SPA_NAME_PLACEHOLDER}`,
-      description: `Consultation with ${pract?.name || 'your practitioner'}.\n\nFormat: ${formatLabel}\nQuestions or to reschedule, call ${SPA_PHONE}.`,
+      description: `Appointment with ${pract?.name || 'your practitioner'}.\n\nFormat: ${formatLabel}\nQuestions or to reschedule, call ${SPA_PHONE}.`,
       location:
         state.format === 'virtual'
           ? 'Virtual (link emailed)'
@@ -81,11 +84,15 @@ export default function Confirmation() {
           />
           <Row label="Format" value={formatLabel} />
           <Row label="Location" value={locationLabel} />
-          <Row label="Fee paid" value={`$${svc?.fee || 0}`} />
-          <Row
-            label="Card"
-            value={state.payment.cardLast4 ? `•••• ${state.payment.cardLast4}` : '—'}
-          />
+          {paid && (
+            <>
+              <Row label="Fee paid" value={`$${svc?.fee || 0}`} />
+              <Row
+                label="Card"
+                value={state.payment.cardLast4 ? `•••• ${state.payment.cardLast4}` : '—'}
+              />
+            </>
+          )}
         </dl>
       </div>
 
@@ -112,8 +119,8 @@ export default function Confirmation() {
           <Mail size={12} className="text-coast-ocean" /> Email previews
         </div>
         <div className="grid grid-cols-1 gap-4">
-          <PatientEmail state={state} svc={svc} pract={pract} apptDate={apptDate} formatLabel={formatLabel} locationLabel={locationLabel} />
-          <SpaEmail state={state} svc={svc} pract={pract} apptDate={apptDate} formatLabel={formatLabel} />
+          <PatientEmail state={state} svc={svc} pract={pract} apptDate={apptDate} formatLabel={formatLabel} locationLabel={locationLabel} paid={paid} />
+          <SpaEmail state={state} svc={svc} pract={pract} apptDate={apptDate} formatLabel={formatLabel} paid={paid} />
         </div>
       </div>
     </StepShell>
@@ -145,13 +152,13 @@ function EmailHeader({ from, to, subject }) {
   );
 }
 
-function PatientEmail({ state, svc, pract, apptDate, formatLabel, locationLabel }) {
+function PatientEmail({ state, svc, pract, apptDate, formatLabel, locationLabel, paid }) {
   return (
     <article className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
       <EmailHeader
         from={{ name: `${SPA_NAME_PLACEHOLDER} <bookings@medspa.example>` }}
         to={state.intake.email || 'you@example.com'}
-        subject={`Your ${svc?.name || 'consultation'} is confirmed`}
+        subject={`Your ${svc?.name || 'appointment'} is confirmed`}
       />
       <div className="p-5 text-sm text-slate-700">
         <div className="rounded-lg bg-gradient-to-r from-coast-deep to-coast-ocean px-4 py-5 text-white">
@@ -197,13 +204,15 @@ function PatientEmail({ state, svc, pract, apptDate, formatLabel, locationLabel 
           </p>
         </div>
 
-        <div className="mt-3 rounded-lg border border-slate-200 p-3 text-xs">
-          <p className="font-semibold text-coast-deep">Receipt</p>
-          <p className="mt-1 text-slate-600">
-            Consultation fee: <span className="font-medium text-slate-800">${svc?.fee}</span> ·
-            Card ending {state.payment.cardLast4 || '••••'}
-          </p>
-        </div>
+        {paid && (
+          <div className="mt-3 rounded-lg border border-slate-200 p-3 text-xs">
+            <p className="font-semibold text-coast-deep">Receipt</p>
+            <p className="mt-1 text-slate-600">
+              Service fee: <span className="font-medium text-slate-800">${svc?.fee}</span> ·
+              Card ending {state.payment.cardLast4 || '••••'}
+            </p>
+          </div>
+        )}
 
         <p className="mt-4 text-xs text-slate-500">
           Need to cancel or reschedule? Please call{' '}
@@ -218,18 +227,18 @@ function PatientEmail({ state, svc, pract, apptDate, formatLabel, locationLabel 
   );
 }
 
-function SpaEmail({ state, svc, pract, apptDate, formatLabel }) {
+function SpaEmail({ state, svc, pract, apptDate, formatLabel, paid }) {
   return (
     <article className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
       <EmailHeader
         from={{ name: `${SPA_NAME_PLACEHOLDER} <bookings@${SPA_DOMAIN_PLACEHOLDER}>` }}
         to={`bookings@medspa.example`}
-        subject={`New consultation booked — ${svc?.name || ''}`}
+        subject={`New appointment booked — ${svc?.name || ''}`}
       />
       <div className="p-5 text-sm text-slate-700">
         <p className="text-xs uppercase tracking-widest text-coast-ocean">New appointment</p>
         <h4 className="mt-1 text-base font-semibold text-slate-800">
-          {state.intake.fullName || 'Patient'} booked {svc?.name || 'a consultation'}
+          {state.intake.fullName || 'Patient'} booked {svc?.name || 'an appointment'}
         </h4>
 
         <div className="mt-3 rounded-lg border border-slate-200 p-3">
@@ -292,9 +301,11 @@ function SpaEmail({ state, svc, pract, apptDate, formatLabel }) {
           </ul>
         </div>
 
-        <div className="mt-3 rounded-lg bg-emerald-50 p-3 text-xs text-emerald-800">
-          Payment confirmed: ${svc?.fee} on card ending {state.payment.cardLast4 || '••••'}.
-        </div>
+        {paid && (
+          <div className="mt-3 rounded-lg bg-emerald-50 p-3 text-xs text-emerald-800">
+            Payment confirmed: ${svc?.fee} on card ending {state.payment.cardLast4 || '••••'}.
+          </div>
+        )}
       </div>
     </article>
   );
