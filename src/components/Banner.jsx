@@ -5,14 +5,23 @@ import { siteConfig } from '../config/siteConfig.js';
 export default function Banner() {
   return (
     <div
-      className="relative overflow-hidden rounded-t-2xl px-5 py-3 text-white"
+      className="relative overflow-hidden rounded-t-2xl px-5 py-4 text-white"
       style={{
-        background: `linear-gradient(135deg, ${siteConfig.primaryColor}, ${siteConfig.primaryColorDark})`,
+        background: `linear-gradient(135deg, ${siteConfig.primaryColor} 0%, ${siteConfig.primaryColorDark} 100%)`,
       }}
     >
-      <div className="flex items-center justify-between">
+      {/* Soft top-left highlight for a less flat, more contemporary gradient */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            'radial-gradient(120% 100% at 0% 0%, rgba(255,255,255,0.16), rgba(255,255,255,0) 60%)',
+        }}
+      />
+      <div className="relative flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Waves size={18} className="opacity-90" />
+          <Waves size={18} className="opacity-80" strokeWidth={1.75} />
           {siteConfig.logoUrl ? (
             <img
               src={siteConfig.logoUrl}
@@ -20,10 +29,12 @@ export default function Banner() {
               className="h-5 w-auto object-contain"
             />
           ) : (
-            <span className="text-base font-semibold tracking-tight">{siteConfig.brandName}</span>
+            <span className="font-serif text-lg font-medium leading-none tracking-tight">
+              {siteConfig.brandName}
+            </span>
           )}
         </div>
-        <span className="text-[11px] uppercase tracking-widest text-white/70">
+        <span className="text-[10.5px] font-medium uppercase tracking-[0.16em] text-white/65">
           Book appointment
         </span>
       </div>

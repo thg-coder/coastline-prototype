@@ -109,8 +109,8 @@ export default function ServiceSelection() {
     <>
       <StepShell canContinue={!!selectedId} onContinue={() => goNext()} continueLabel="Continue">
         <div>
-          <h2 className="text-lg font-semibold text-coast-deep">Choose your treatment</h2>
-          <p className="mt-1 text-sm text-slate-500">
+          <h2 className="text-lg font-semibold tracking-tight text-coast-deep">Choose your treatment</h2>
+          <p className="mt-1 text-sm leading-relaxed text-coast-ink/55">
             Book your appointment in under a minute.
           </p>
         </div>
@@ -127,15 +127,15 @@ export default function ServiceSelection() {
               type="text"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              placeholder="Search services..."
-              className="block w-full rounded-xl border border-slate-200 bg-white py-2 pl-9 pr-9 text-sm text-coast-deep shadow-sm focus:border-coast-ocean focus:outline-none focus:ring-1 focus:ring-coast-ocean"
+              placeholder="Search services…"
+              className="block w-full rounded-xl border border-coast-mist bg-white py-2.5 pl-9 pr-9 text-sm text-coast-ink placeholder:text-slate-400 shadow-card transition-shadow focus:border-coast-ocean focus:outline-none focus:ring-2 focus:ring-coast-ocean/20"
               aria-label="Search services"
             />
             {searchInput && (
               <button
                 type="button"
                 onClick={() => setSearchInput('')}
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
                 aria-label="Clear search"
               >
                 <X size={14} />
@@ -146,23 +146,23 @@ export default function ServiceSelection() {
 
         {/* Categories or empty state */}
         {isSearching && totalMatches === 0 ? (
-          <div className="mt-2 rounded-xl border border-dashed border-slate-200 bg-slate-50 p-5 text-center">
-            <p className="text-sm text-coast-deep">
+          <div className="mt-2 rounded-xl border border-dashed border-coast-mist bg-coast-cream/60 p-6 text-center">
+            <p className="text-sm font-medium text-coast-deep">
               No services match your search.
             </p>
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-1 text-xs text-coast-ink/55">
               Try a different keyword or browse by category below.
             </p>
           </div>
         ) : (
-          <ul className="mt-1 space-y-2">
+          <ul className="mt-1 space-y-2.5">
             {visibleCategories.map((cat) => {
               const open = isExpanded(cat.id);
               const labelCount = isSearching ? cat.services.length : cat.totalCount;
               return (
                 <li
                   key={cat.id}
-                  className="overflow-hidden rounded-xl border border-slate-200 bg-white"
+                  className="overflow-hidden rounded-xl border border-coast-mist bg-white shadow-card"
                 >
                   <button
                     type="button"
@@ -170,21 +170,24 @@ export default function ServiceSelection() {
                     aria-expanded={open}
                     aria-controls={`cat-panel-${cat.id}`}
                     disabled={isSearching}
-                    className={`flex w-full items-center justify-between px-4 py-3 text-left transition-colors ${
+                    className={`flex w-full items-center justify-between px-4 py-3.5 text-left transition-colors ${
                       isSearching
                         ? 'cursor-default bg-coast-sky/30'
-                        : 'hover:bg-coast-sky/40 active:bg-coast-sky/60'
+                        : 'hover:bg-coast-sky/35 active:bg-coast-sky/55'
                     }`}
                   >
-                    <span className="flex items-baseline gap-2">
-                      <span className="text-base font-semibold tracking-tight text-coast-deep">
+                    <span className="flex items-center gap-2">
+                      <span className="text-[15px] font-semibold tracking-tight text-coast-deep">
                         {cat.label}
                       </span>
-                      <span className="text-xs font-medium text-slate-400">({labelCount})</span>
+                      <span className="inline-flex items-center rounded-full bg-coast-sky px-1.5 py-0.5 text-[10.5px] font-semibold text-coast-ocean">
+                        {labelCount}
+                      </span>
                     </span>
                     <ChevronDown
                       size={18}
-                      className={`shrink-0 text-coast-ocean transition-transform duration-200 ${
+                      strokeWidth={2}
+                      className={`shrink-0 text-coast-sea transition-transform duration-200 ${
                         open ? 'rotate-180' : 'rotate-0'
                       }`}
                       aria-hidden="true"
@@ -198,7 +201,7 @@ export default function ServiceSelection() {
                     }`}
                   >
                     <div className="overflow-hidden">
-                      <div className="space-y-2 border-t border-slate-100 px-3 py-3">
+                      <div className="space-y-2.5 border-t border-coast-mist/70 px-3 py-3">
                         {cat.services.map((svc) => {
                           const isSelected = selectedId === svc.id;
                           const multiFormat = svc.formats.length > 1;
@@ -208,42 +211,42 @@ export default function ServiceSelection() {
                                 type="button"
                                 onClick={() => handlePick(svc.id)}
                                 aria-pressed={isSelected}
-                                className={`group relative flex w-full flex-col rounded-lg border p-3 text-left transition-all ${
+                                className={`group relative flex w-full flex-col rounded-xl border p-3.5 text-left transition-all duration-150 ${
                                   isSelected
-                                    ? 'border-coast-ocean bg-coast-sky/40 shadow-sm ring-1 ring-coast-ocean/30'
-                                    : 'border-slate-200 bg-white hover:border-coast-sea hover:shadow-sm'
+                                    ? 'border-coast-ocean bg-coast-sky shadow-card-active ring-1 ring-coast-ocean/20'
+                                    : 'border-coast-mist/80 bg-coast-shell hover:border-coast-sea hover:bg-white hover:shadow-card-hover'
                                 }`}
                               >
                                 {isSelected && (
-                                  <span className="absolute right-3 top-3 inline-flex h-5 w-5 items-center justify-center rounded-full bg-coast-ocean text-white">
+                                  <span className="absolute right-3 top-3 inline-flex h-5 w-5 items-center justify-center rounded-full bg-coast-ocean text-white shadow-sm">
                                     <Check size={12} strokeWidth={3} />
                                   </span>
                                 )}
-                                <h3 className="pr-6 text-sm font-semibold text-coast-deep">
+                                <h3 className="pr-6 text-sm font-semibold tracking-tight text-coast-deep">
                                   {svc.name}
                                 </h3>
-                                <p className="mt-1 line-clamp-2 text-xs text-slate-500">
+                                <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-coast-ink/55">
                                   {svc.description}
                                 </p>
-                                <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-600">
+                                <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-coast-ink/55">
                                   <span className="inline-flex items-center gap-1">
-                                    <Clock size={12} className="text-coast-ocean" />
+                                    <Clock size={12} className="text-coast-sea" />
                                     {svc.durationMin} min
                                   </span>
                                   {priceLabel(svc) && (
                                     <span className="inline-flex items-center gap-1">
-                                      <DollarSign size={12} className="text-coast-ocean" />
+                                      <DollarSign size={12} className="text-coast-sea" />
                                       {priceLabel(svc)}
                                     </span>
                                   )}
                                   {!multiFormat && (
-                                    <span className="inline-flex items-center gap-1 text-slate-500">
+                                    <span className="inline-flex items-center gap-1">
                                       <MapPin size={12} className="text-coast-sea" />
                                       In-person only
                                     </span>
                                   )}
                                   {multiFormat && !isSelected && (
-                                    <span className="inline-flex items-center gap-1 text-slate-500">
+                                    <span className="inline-flex items-center gap-1">
                                       <Video size={12} className="text-coast-sea" />
                                       Virtual or in-person
                                     </span>
@@ -252,11 +255,11 @@ export default function ServiceSelection() {
                               </button>
 
                               {isSelected && multiFormat && (
-                                <div className="mt-1.5 flex items-center gap-2 rounded-lg bg-coast-sky/40 px-3 py-2">
-                                  <span className="text-[11px] font-semibold uppercase tracking-wide text-coast-deep">
+                                <div className="mt-1.5 flex items-center gap-2.5 rounded-xl bg-coast-sky/55 px-3 py-2">
+                                  <span className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-coast-deep">
                                     Format
                                   </span>
-                                  <div className="flex gap-1">
+                                  <div className="flex gap-1.5">
                                     <FormatToggle
                                       active={state.format === 'in_person'}
                                       onClick={() =>
@@ -308,10 +311,10 @@ function FormatToggle({ active, onClick, icon, label }) {
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors ${
+      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-all duration-150 ${
         active
-          ? 'bg-coast-ocean text-white'
-          : 'bg-white text-coast-deep ring-1 ring-slate-200 hover:bg-coast-sky/40'
+          ? 'bg-coast-ocean text-white shadow-sm'
+          : 'bg-white text-coast-ink/65 ring-1 ring-coast-mist hover:text-coast-ocean hover:ring-coast-sea'
       }`}
     >
       {icon}

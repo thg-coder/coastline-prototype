@@ -36,14 +36,14 @@ export default function StepShell({
     <div className="flex flex-col">
       <div className="animate-fadeIn px-5 py-5">{children}</div>
       {(showBack || !hideContinue) && (
-        <div className="flex items-center justify-between gap-3 border-t border-slate-100 bg-white px-5 py-3">
+        <div className="flex items-center justify-between gap-3 border-t border-slate-100 bg-white px-5 py-3.5">
           {showBack ? (
             <button
               type="button"
               onClick={goBack}
-              className="inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-coast-ocean hover:bg-coast-sky/60 active:bg-coast-sky"
+              className="inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-coast-ink/65 transition-colors hover:bg-coast-sky/50 hover:text-coast-ocean active:bg-coast-sky/80"
             >
-              <ChevronLeft size={16} />
+              <ChevronLeft size={16} strokeWidth={2} />
               Back
             </button>
           ) : (
@@ -54,10 +54,10 @@ export default function StepShell({
               type="button"
               onClick={handleContinue}
               disabled={!canContinue || pending}
-              className={`inline-flex min-w-[120px] items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all ${
-                continueVariant === 'primary'
-                  ? 'bg-coast-ocean text-white shadow-sm hover:bg-coast-deep active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none'
-                  : 'bg-emerald-600 text-white hover:bg-emerald-700 disabled:bg-slate-200 disabled:text-slate-400'
+              className={`inline-flex min-w-[124px] items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold tracking-tight transition-all duration-150 active:scale-[0.985] disabled:cursor-not-allowed disabled:scale-100 disabled:bg-slate-100 disabled:text-slate-400 disabled:shadow-none ${
+                continueVariant === 'success'
+                  ? 'bg-emerald-600 text-white shadow-cta hover:bg-emerald-700'
+                  : 'bg-coast-ocean text-white shadow-cta hover:bg-coast-deep'
               }`}
             >
               {pending && <span className="spinner" aria-hidden="true" />}

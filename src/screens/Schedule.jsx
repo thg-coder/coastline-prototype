@@ -217,8 +217,8 @@ export default function Schedule() {
     <StepShell canContinue={canContinue} onContinue={onContinue}>
       {/* New-patient initial-visit notice */}
       {isNewPatient && (
-        <div className="mb-4 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs leading-relaxed text-amber-900">
-          <Info size={14} className="mt-[2px] shrink-0" />
+        <div className="mb-4 flex items-start gap-2.5 rounded-xl border border-amber-200/80 bg-amber-50/80 p-3.5 text-xs leading-relaxed text-amber-900">
+          <Info size={15} strokeWidth={2} className="mt-px shrink-0 text-amber-600" />
           <span>
             Heads up — since this is your first visit with us, you'll meet your provider for a
             brief good-faith exam before treatment. This is required in{' '}
@@ -231,25 +231,27 @@ export default function Schedule() {
       {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
-          <h2 className="text-lg font-semibold text-coast-deep">Pick a time &amp; your details</h2>
-          <p className="text-sm text-slate-500">
+          <h2 className="text-lg font-semibold tracking-tight text-coast-deep">
+            Pick a time &amp; your details
+          </h2>
+          <p className="text-sm leading-relaxed text-coast-ink/55">
             All times shown in Eastern Time ({TIMEZONE_LABEL}).
           </p>
         </div>
         <span
-          className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-medium ${
+          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium ${
             state.format === 'virtual'
-              ? 'border-coast-sea/40 bg-coast-sky/60 text-coast-deep'
-              : 'border-coast-sea/40 bg-coast-cream text-coast-deep'
+              ? 'bg-coast-sky text-coast-deep'
+              : 'bg-coast-sand/70 text-coast-deep'
           }`}
         >
           {state.format === 'virtual' ? (
             <>
-              <Video size={12} /> Virtual
+              <Video size={12} className="text-coast-sea" /> Virtual
             </>
           ) : (
             <>
-              <MapPin size={12} /> In-person at {siteConfig.practiceName}
+              <MapPin size={12} className="text-coast-sea" /> In-person at {siteConfig.practiceName}
             </>
           )}
         </span>
@@ -257,24 +259,24 @@ export default function Schedule() {
 
       {/* Provider line + expander */}
       {pract && (
-        <div className="mt-3">
-          <div className="flex items-center gap-2 rounded-lg bg-coast-sky/40 px-3 py-2 text-xs text-coast-deep">
+        <div className="mt-3.5">
+          <div className="flex items-center gap-2.5 rounded-xl bg-coast-sky/45 px-3 py-2.5 text-xs text-coast-ink/70">
             <span
-              className="inline-flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-semibold text-white"
+              className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[10px] font-semibold text-white"
               style={{ backgroundColor: pract.color }}
               aria-hidden="true"
             >
               {pract.initials}
             </span>
             <span className="flex-1">
-              You'll be seeing <span className="font-semibold">{pract.name}</span>
+              You'll be seeing <span className="font-semibold text-coast-deep">{pract.name}</span>
               {pract.credentials ? `, ${pract.credentials}.` : '.'}
             </span>
             {multiplePractitioners && (
               <button
                 type="button"
                 onClick={() => setShowProviders((v) => !v)}
-                className="inline-flex items-center gap-0.5 text-coast-ocean underline-offset-2 hover:underline"
+                className="inline-flex shrink-0 items-center gap-1 font-medium text-coast-ocean underline-offset-2 hover:underline"
               >
                 <Users size={12} />
                 {showProviders ? 'Hide' : 'See other providers'}
@@ -291,10 +293,10 @@ export default function Schedule() {
                       type="button"
                       onClick={() => pickProvider(p.id)}
                       aria-pressed={selected}
-                      className={`relative flex w-full items-start gap-3 rounded-lg border p-3 text-left transition-all ${
+                      className={`relative flex w-full items-start gap-3 rounded-xl border p-3.5 text-left transition-all duration-150 ${
                         selected
-                          ? 'border-coast-ocean bg-coast-sky/40 ring-1 ring-coast-ocean/30'
-                          : 'border-slate-200 bg-white hover:border-coast-sea'
+                          ? 'border-coast-ocean bg-coast-sky shadow-card-active ring-1 ring-coast-ocean/20'
+                          : 'border-coast-mist/80 bg-coast-shell hover:border-coast-sea hover:bg-white hover:shadow-card-hover'
                       }`}
                     >
                       <span
@@ -305,12 +307,18 @@ export default function Schedule() {
                         {p.initials}
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="block text-sm font-semibold text-coast-deep">{p.name}</span>
-                        <span className="block text-xs text-coast-ocean">{p.credentials}</span>
-                        <span className="mt-0.5 block text-xs text-slate-500">{p.bio}</span>
+                        <span className="block text-sm font-semibold tracking-tight text-coast-deep">
+                          {p.name}
+                        </span>
+                        <span className="block text-[11px] font-medium text-coast-ocean">
+                          {p.credentials}
+                        </span>
+                        <span className="mt-0.5 block text-xs leading-relaxed text-coast-ink/55">
+                          {p.bio}
+                        </span>
                       </span>
                       {selected && (
-                        <span className="ml-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-coast-ocean text-white">
+                        <span className="ml-1 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-coast-ocean text-white shadow-sm">
                           <Check size={12} strokeWidth={3} />
                         </span>
                       )}
@@ -325,13 +333,13 @@ export default function Schedule() {
 
       {/* Format-changed reminder */}
       {state.formatChangedSinceTimePick && state.selectedTime && (
-        <div className="mt-3 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
-          <Info size={14} className="mt-[2px] shrink-0" />
+        <div className="mt-3 flex items-start gap-2.5 rounded-xl border border-amber-200/80 bg-amber-50/80 px-3.5 py-2.5 text-xs text-amber-800">
+          <Info size={14} strokeWidth={2} className="mt-px shrink-0 text-amber-600" />
           <div className="flex-1">Format updated — please confirm your time slot.</div>
           <button
             type="button"
             onClick={() => dispatch({ type: 'CONFIRM_FORMAT_BANNER_DISMISSED' })}
-            className="text-amber-900 underline-offset-2 hover:underline"
+            className="font-medium text-amber-900 underline-offset-2 hover:underline"
           >
             Dismiss
           </button>
@@ -344,33 +352,33 @@ export default function Schedule() {
           type="button"
           onClick={() => setViewMonth((m) => addMonths(m, -1))}
           disabled={viewMonth <= startOfMonth(today)}
-          className="rounded-lg p-2 text-coast-ocean hover:bg-coast-sky/60 disabled:cursor-not-allowed disabled:text-slate-300 disabled:hover:bg-transparent"
+          className="rounded-lg p-2 text-coast-ocean transition-colors hover:bg-coast-sky/55 disabled:cursor-not-allowed disabled:text-slate-300 disabled:hover:bg-transparent"
           aria-label="Previous month"
         >
-          <ChevronLeft size={18} />
+          <ChevronLeft size={18} strokeWidth={2} />
         </button>
-        <h3 className="text-sm font-semibold text-coast-deep">
+        <h3 className="text-sm font-semibold tracking-tight text-coast-deep">
           {viewMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
         </h3>
         <button
           type="button"
           onClick={() => setViewMonth((m) => addMonths(m, 1))}
-          className="rounded-lg p-2 text-coast-ocean hover:bg-coast-sky/60"
+          className="rounded-lg p-2 text-coast-ocean transition-colors hover:bg-coast-sky/55"
           aria-label="Next month"
         >
-          <ChevronRight size={18} />
+          <ChevronRight size={18} strokeWidth={2} />
         </button>
       </div>
 
       {/* Weekday header */}
-      <div className="mt-3 grid grid-cols-7 gap-1 text-center text-[11px] font-medium uppercase tracking-wider text-slate-400">
+      <div className="mt-3 grid grid-cols-7 gap-1 text-center text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-400">
         {WEEKDAYS.map((d) => (
           <div key={d}>{d}</div>
         ))}
       </div>
 
       {/* Day grid */}
-      <div className="mt-1 grid grid-cols-7 gap-1">
+      <div className="mt-1.5 grid grid-cols-7 gap-1">
         {grid.map((cell, i) => {
           if (!cell) return <div key={i} className="h-10" />;
           const key = formatDateKey(cell);
@@ -387,17 +395,17 @@ export default function Schedule() {
               onClick={() => handleDayClick(cell)}
               aria-pressed={isSelected}
               aria-label={cell.toDateString()}
-              className={`relative h-10 rounded-lg text-sm font-medium transition-colors ${
+              className={`relative h-10 rounded-lg text-sm font-medium tabular-nums transition-all duration-150 ${
                 isSelected
-                  ? 'bg-coast-ocean text-white shadow-sm'
+                  ? 'bg-coast-ocean text-white shadow-card-active'
                   : disabled
                     ? 'text-slate-300'
-                    : 'text-coast-deep hover:bg-coast-sky/60'
-              } ${isToday && !isSelected ? 'ring-1 ring-coast-ocean/60' : ''}`}
+                    : 'text-coast-ink hover:bg-coast-sky/55'
+              } ${isToday && !isSelected ? 'ring-1 ring-inset ring-coast-ocean/45 font-semibold text-coast-ocean' : ''}`}
             >
               {cell.getDate()}
               {hasAvailability && !isSelected && !disabled && (
-                <span className="absolute bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-coast-sea" />
+                <span className="absolute bottom-1.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-coast-sea" />
               )}
             </button>
           );
@@ -407,9 +415,9 @@ export default function Schedule() {
       {/* Time slots */}
       {selectedDateKey ? (
         <div className="mt-5">
-          <h4 className="text-sm font-semibold text-coast-deep">
+          <h4 className="text-sm font-semibold tracking-tight text-coast-deep">
             Available times{' '}
-            <span className="font-normal text-slate-500">
+            <span className="font-normal text-coast-ink/50">
               ·{' '}
               {(() => {
                 const [y, m, d] = selectedDateKey.split('-').map(Number);
@@ -422,11 +430,11 @@ export default function Schedule() {
             </span>
           </h4>
           {slotsForRender.length === 0 ? (
-            <p className="mt-2 rounded-lg bg-slate-50 p-3 text-xs text-slate-500">
+            <p className="mt-2 rounded-xl bg-coast-cream/70 px-3 py-2.5 text-xs text-coast-ink/55">
               No remaining times for this day. Try another date.
             </p>
           ) : (
-            <div className="mt-2 -mx-1 flex gap-2 overflow-x-auto px-1 pb-1 no-scrollbar">
+            <div className="mt-2.5 -mx-1 flex gap-2 overflow-x-auto px-1 pb-1 no-scrollbar">
               {slotsForRender.map((hhmm) => {
                 const isSelected = state.selectedTime === hhmm;
                 return (
@@ -435,10 +443,10 @@ export default function Schedule() {
                     type="button"
                     onClick={() => handleSlotClick(hhmm)}
                     aria-pressed={isSelected}
-                    className={`shrink-0 whitespace-nowrap rounded-full border px-3 py-2 text-xs font-medium transition-all ${
+                    className={`shrink-0 whitespace-nowrap rounded-full border px-3.5 py-1.5 text-xs font-medium tabular-nums transition-all duration-150 ${
                       isSelected
-                        ? 'border-coast-ocean bg-coast-ocean text-white shadow-sm'
-                        : 'border-slate-200 bg-white text-coast-deep hover:border-coast-sea hover:bg-coast-sky/40'
+                        ? 'border-coast-ocean bg-coast-ocean text-white shadow-card-active'
+                        : 'border-coast-mist bg-white text-coast-ink/75 hover:border-coast-sea hover:bg-coast-sky/35 hover:text-coast-deep'
                     }`}
                   >
                     {formatTime12h(hhmm)}
@@ -449,15 +457,15 @@ export default function Schedule() {
           )}
         </div>
       ) : (
-        <p className="mt-5 rounded-lg bg-slate-50 p-3 text-xs text-slate-500">
+        <p className="mt-5 rounded-xl bg-coast-cream/70 px-3 py-2.5 text-xs text-coast-ink/55">
           Select a date to see available times.
         </p>
       )}
 
       {/* Intake fields */}
-      <div className="mt-7 border-t border-slate-100 pt-5">
-        <h3 className="text-sm font-semibold text-coast-deep">Your details</h3>
-        <p className="text-xs text-slate-500">
+      <div className="mt-7 border-t border-coast-mist/70 pt-5">
+        <h3 className="text-sm font-semibold tracking-tight text-coast-deep">Your details</h3>
+        <p className="mt-0.5 text-xs text-coast-ink/55">
           Required fields are marked with <span className="text-rose-500">*</span>.
         </p>
         <div className="mt-4 grid grid-cols-1 gap-4">
@@ -514,7 +522,7 @@ export default function Schedule() {
               rows={3}
               value={intake.reason}
               onChange={(e) => setField('reason', e.target.value)}
-              className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-coast-deep shadow-sm focus:border-coast-ocean focus:outline-none focus:ring-1 focus:ring-coast-ocean"
+              className="mt-1.5 block w-full rounded-lg border border-coast-mist bg-white px-3 py-2.5 text-sm text-coast-ink placeholder:text-slate-400 shadow-card transition-shadow focus:border-coast-ocean focus:outline-none focus:ring-2 focus:ring-coast-ocean/20"
               placeholder="Optional"
             />
           </div>
@@ -530,7 +538,7 @@ export default function Schedule() {
                 setTouched((t) => ({ ...t, referral: true }));
               }}
               onBlur={() => handleBlur('referral')}
-              className="mt-1 block w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-coast-deep shadow-sm focus:border-coast-ocean focus:outline-none focus:ring-1 focus:ring-coast-ocean"
+              className="mt-1.5 block w-full rounded-lg border border-coast-mist bg-white px-3 py-2.5 text-sm text-coast-ink shadow-card transition-shadow focus:border-coast-ocean focus:outline-none focus:ring-2 focus:ring-coast-ocean/20"
             >
               <option value="">Select…</option>
               {REFERRAL_OPTIONS.map((o) => (
@@ -540,22 +548,22 @@ export default function Schedule() {
               ))}
             </select>
             {touched.referral && errors.referral && (
-              <p className="mt-1 text-xs text-rose-600">{errors.referral}</p>
+              <p className="mt-1.5 text-xs text-rose-600">{errors.referral}</p>
             )}
           </div>
         </div>
       </div>
 
       {/* Cancellation policy */}
-      <div className="mt-6 border-t border-slate-100 pt-5">
-        <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 bg-white p-3 hover:border-coast-sea">
+      <div className="mt-6 border-t border-coast-mist/70 pt-5">
+        <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-coast-mist bg-coast-shell p-3.5 transition-colors hover:border-coast-sea">
           <input
             type="checkbox"
             checked={state.policyAccepted}
             onChange={(e) => dispatch({ type: 'SET_POLICY', value: e.target.checked })}
-            className="mt-1 h-4 w-4 accent-coast-ocean"
+            className="mt-0.5 h-4 w-4 accent-coast-ocean"
           />
-          <span className="text-sm text-coast-deep">
+          <span className="text-sm leading-snug text-coast-ink">
             I agree to the cancellation policy. <span className="text-rose-500">*</span>
           </span>
         </label>
@@ -567,21 +575,19 @@ export default function Schedule() {
         >
           <ChevronDown
             size={14}
-            className={`transition-transform ${policyOpen ? 'rotate-180' : ''}`}
+            className={`transition-transform duration-200 ${policyOpen ? 'rotate-180' : ''}`}
             aria-hidden="true"
           />
           {policyOpen ? 'Hide cancellation policy' : 'Read cancellation policy'}
         </button>
         {policyOpen && (
-          <div className="mt-2 space-y-2">
-            <div className="flex items-start gap-3 rounded-xl border border-coast-mist bg-coast-sky/40 p-4">
-              <Phone size={18} className="mt-0.5 shrink-0 text-coast-ocean" />
-              <p className="text-sm leading-relaxed text-coast-deep">
-                To cancel or reschedule, please call us at{' '}
-                <span className="font-semibold">{siteConfig.practicePhone}</span> — we don't
-                process changes through this widget. A day's notice is appreciated when you can.
-              </p>
-            </div>
+          <div className="mt-2 flex items-start gap-3 rounded-xl border border-coast-mist bg-coast-sky/35 p-4">
+            <Phone size={18} strokeWidth={1.75} className="mt-0.5 shrink-0 text-coast-sea" />
+            <p className="text-sm leading-relaxed text-coast-ink/80">
+              To cancel or reschedule, please call us at{' '}
+              <span className="font-semibold text-coast-deep">{siteConfig.practicePhone}</span> — we
+              don't process changes through this widget. A day's notice is appreciated when you can.
+            </p>
           </div>
         )}
       </div>
@@ -603,13 +609,13 @@ function Field({ id, label, type = 'text', required, value, onChange, onBlur, er
         onBlur={onBlur}
         placeholder={placeholder}
         autoComplete={autoComplete}
-        className={`mt-1 block w-full rounded-lg border bg-white px-3 py-2 text-sm text-coast-deep shadow-sm focus:outline-none focus:ring-1 ${
+        className={`mt-1.5 block w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-coast-ink placeholder:text-slate-400 shadow-card transition-shadow focus:outline-none focus:ring-2 ${
           error
-            ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-400'
-            : 'border-slate-200 focus:border-coast-ocean focus:ring-coast-ocean'
+            ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-400/25'
+            : 'border-coast-mist focus:border-coast-ocean focus:ring-coast-ocean/20'
         }`}
       />
-      {error && <p className="mt-1 text-xs text-rose-600">{error}</p>}
+      {error && <p className="mt-1.5 text-xs text-rose-600">{error}</p>}
     </div>
   );
 }
