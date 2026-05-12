@@ -8,7 +8,6 @@ import {
   Users,
   Check,
   Phone,
-  AlertCircle,
   ChevronDown,
 } from 'lucide-react';
 import { useBooking } from '../state/BookingContext.jsx';
@@ -573,16 +572,9 @@ export default function Schedule() {
             <div className="flex items-start gap-3 rounded-xl border border-coast-mist bg-coast-sky/40 p-4">
               <Phone size={18} className="mt-0.5 shrink-0 text-coast-ocean" />
               <p className="text-sm leading-relaxed text-coast-deep">
-                All cancellations and reschedules must be handled by calling{' '}
-                <span className="font-semibold">{SPA_PHONE}</span> directly. We do not process
-                cancellations through this widget.
-              </p>
-            </div>
-            <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
-              <AlertCircle size={18} className="mt-0.5 shrink-0 text-amber-600" />
-              <p className="text-sm leading-relaxed text-amber-900">
-                Refund eligibility for any charges is determined by the med spa's cancellation
-                policy.
+                To cancel or reschedule, please call us at{' '}
+                <span className="font-semibold">{SPA_PHONE}</span> — we don't process changes
+                through this widget. A day's notice is appreciated when you can.
               </p>
             </div>
           </div>
